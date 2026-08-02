@@ -17,4 +17,11 @@ app.use(express.static("public"))
 
 app.use(cookieParser())
 
+//router import
+
+
+
+
+
+
 export {app}
