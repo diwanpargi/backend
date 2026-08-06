@@ -1,20 +1,38 @@
-import { Router } from "express";
-import { RegisterUser } from "../controllers/user.controller.js"
-import { upload } from "../middlewares/multer.middleware.js";
+import { asyncHandler } from "../utils/asynchandeler.js";
+import { ApiError } from "../utils/Apierror.js";
+import { uploadOnCloudinary } from "../utils/claudinary.js";
+import { ApiResponse } from "../utils/Apiresponse.js";
+import { User } from "../models/user.models.js";
+import { use } from "react";
 
-const router=Router();
+const registerUser = asynchandler(async (req, res) => {
+  //get user details from frontend
+  //validation-not empty
+  //check if user already exists : username,email
+  //check for Image,check for avatar
+  //upload them to cloudinary,avatar
+  //create user object -create entry in db
+  //remove password and refresh token field from response
+  // check for user creation
+  //return response
 
-router.route("./register").post(
-    upload.fields([
-    {
-        name:"avatar",
-        maxCount:1
-    },
-    {
-     name:"coverImage",
-     maxCount:1
-    }
-    ]),
-RegisterUser)
+  const { fullname, username, password, email } = req.body;
 
-export default router
+  if (
+    [fullname, username, password, email].some((field) => field?.trim() === "")
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const existedUser=await User.findOne({
+    $or:[{username},{email}]
+  })
+  if(existedUser){
+    throw new ApiError(409, "user with email or username already exist");
+  }
+const avatarLocalPath=req.files?.avatar[0]?.path;
+
+const coverImagelocalPath;
+
+
+});
